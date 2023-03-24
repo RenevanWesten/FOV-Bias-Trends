@@ -31,7 +31,7 @@ def ReadinData(filename, lat_index, depth_min_index, depth_max_index, section_na
 	grid_x		= fh.variables['DX'][lat_index] 					#Zonal grid cell length (m)
 
 	fh.close()
-
+    
 	#Convert to yearly averaged data
 	month_days	= np.asarray([31., 28., 31., 30., 31., 30., 31., 31., 30., 31., 30., 31.])
 	month_days	= month_days / np.sum(month_days)
@@ -57,7 +57,8 @@ def ReadinData(filename, lat_index, depth_min_index, depth_max_index, section_na
 depth_min 	= 0
 depth_max	= 6000
 
-section_name	= 'FOV_section_34S'
+#section_name	= 'FOV_section_34S'
+section_name	= 'FOV_section_60N'
 
 #-----------------------------------------------------------------------------------------
 
@@ -76,6 +77,12 @@ for year_i in range(len(files)):
 
 #-----------------------------------------------------------------------------------------
 
+if section_name == 'FOV_section_34S':
+    lat_FOV = -34
+    
+if section_name == 'FOV_section_60N':
+    lat_FOV = 60
+
 #Get all the relevant indices to determine the mass transport
 fh = netcdf.Dataset(files[0], 'r')
 
@@ -87,7 +94,7 @@ fh.close()
 #Get the dimensions of depth and latitude
 depth_min_index 	= (fabs(depth_min - depth)).argmin()
 depth_max_index 	= (fabs(depth_max - depth)).argmin() + 1
-lat_index		    = (fabs(-34 - lat)).argmin()
+lat_index		    = (fabs(lat_FOV - lat)).argmin()
 
 #-----------------------------------------------------------------------------------------
 #Determine the section length per depth layer
@@ -189,42 +196,66 @@ for file_i in range(len(files)):
 	transport_salt_ABW_all[file_i]	= (-1.0 / 35.0) * np.sum(transport_ABW * salt_zonal) / 1000000.0 
 
 #-----------------------------------------------------------------------------------------
-
+D
 print('Data is written to file')
 fh = netcdf.Dataset(directory+'Ocean/FOV_index_'+section_name[4:]+'.nc', 'w')
 
-fh.createDimension('time', len(time))
+if section_name == 'FOV_section_60N':
+    #Only write the FOV, not the other components
+    fh.createDimension('time', len(time))
+    
+    fh.createVariable('time', float, ('time'), zlib=True)
+    fh.createVariable('Transport', float, ('time'), zlib=True)
+    fh.createVariable('F_OV', float, ('time'), zlib=True)
+    
+    fh.variables['Transport'].longname 	= 'Volume transport'
+    fh.variables['F_OV'].longname 		= 'Fresh water transport'
 
-fh.createVariable('time', float, ('time'), zlib=True)
-fh.createVariable('Transport', float, ('time'), zlib=True)
-fh.createVariable('F_OV', float, ('time'), zlib=True)
-fh.createVariable('F_OV_ASW', float, ('time'), zlib=True)
-fh.createVariable('F_OV_AIW', float, ('time'), zlib=True)
-fh.createVariable('F_OV_NADW', float, ('time'), zlib=True)
-fh.createVariable('F_OV_ABW', float, ('time'), zlib=True)
+    fh.variables['time'].units 		    = 'Year'
+    fh.variables['Transport'].units 	= 'Sv'
+    fh.variables['F_OV'].units 		    = 'Sv'
 
-fh.variables['Transport'].longname 	= 'Volume transport'
-fh.variables['F_OV'].longname 		= 'Fresh water transport'
-fh.variables['F_OV_ASW'].longname 	= 'Fresh water transport (Atlantic Surface Water)'
-fh.variables['F_OV_AIW'].longname 	= 'Fresh water transport (Antarctic Intermediate Water)'
-fh.variables['F_OV_NADW'].longname 	= 'Fresh water transport (North Atlantic Deep Water)'
-fh.variables['F_OV_ABW'].longname 	= 'Fresh water transport (Antarctic Bottom Water)'
+    #Writing data to correct variable	
+    fh.variables['time'][:]     	  	= time
+    fh.variables['Transport'][:]    	= transport_all
+    fh.variables['F_OV'][:] 			= transport_salt_all
+    
+    fh.close()
 
-fh.variables['time'].units 		    = 'Year'
-fh.variables['Transport'].units 	= 'Sv'
-fh.variables['F_OV'].units 		    = 'Sv'
-fh.variables['F_OV_ASW'].units 		= 'Sv'
-fh.variables['F_OV_AIW'].units 		= 'Sv'
-fh.variables['F_OV_NADW'].units 	= 'Sv'
-fh.variables['F_OV_ABW'].units 		= 'Sv'
-
-#Writing data to correct variable	
-fh.variables['time'][:]     	  	= time
-fh.variables['Transport'][:]    	= transport_all
-fh.variables['F_OV'][:] 			= transport_salt_all
-fh.variables['F_OV_ASW'][:] 		= transport_salt_ASW_all
-fh.variables['F_OV_AIW'][:] 		= transport_salt_AIW_all
-fh.variables['F_OV_NADW'][:] 		= transport_salt_NADW_all
-fh.variables['F_OV_ABW'][:] 		= transport_salt_ABW_all
-
-fh.close()
+else:
+    #The FOV and its components
+    fh.createDimension('time', len(time))
+    
+    fh.createVariable('time', float, ('time'), zlib=True)
+    fh.createVariable('Transport', float, ('time'), zlib=True)
+    fh.createVariable('F_OV', float, ('time'), zlib=True)
+    fh.createVariable('F_OV_ASW', float, ('time'), zlib=True)
+    fh.createVariable('F_OV_AIW', float, ('time'), zlib=True)
+    fh.createVariable('F_OV_NADW', float, ('time'), zlib=True)
+    fh.createVariable('F_OV_ABW', float, ('time'), zlib=True)
+    
+    fh.variables['Transport'].longname 	= 'Volume transport'
+    fh.variables['F_OV'].longname 		= 'Fresh water transport'
+    fh.variables['F_OV_ASW'].longname 	= 'Fresh water transport (Atlantic Surface Water)'
+    fh.variables['F_OV_AIW'].longname 	= 'Fresh water transport (Antarctic Intermediate Water)'
+    fh.variables['F_OV_NADW'].longname 	= 'Fresh water transport (North Atlantic Deep Water)'
+    fh.variables['F_OV_ABW'].longname 	= 'Fresh water transport (Antarctic Bottom Water)'
+    
+    fh.variables['time'].units 		    = 'Year'
+    fh.variables['Transport'].units 	= 'Sv'
+    fh.variables['F_OV'].units 		    = 'Sv'
+    fh.variables['F_OV_ASW'].units 		= 'Sv'
+    fh.variables['F_OV_AIW'].units 		= 'Sv'
+    fh.variables['F_OV_NADW'].units 	= 'Sv'
+    fh.variables['F_OV_ABW'].units 		= 'Sv'
+    
+    #Writing data to correct variable	
+    fh.variables['time'][:]     	  	= time
+    fh.variables['Transport'][:]    	= transport_all
+    fh.variables['F_OV'][:] 			= transport_salt_all
+    fh.variables['F_OV_ASW'][:] 		= transport_salt_ASW_all
+    fh.variables['F_OV_AIW'][:] 		= transport_salt_AIW_all
+    fh.variables['F_OV_NADW'][:] 		= transport_salt_NADW_all
+    fh.variables['F_OV_ABW'][:] 		= transport_salt_ABW_all
+    
+    fh.close()
