@@ -191,6 +191,32 @@ FOV_ABW_mean_rean	= np.mean(FOV_ABW_rean)
 AMOC_mean_rean		= np.mean(AMOC_rean)
 
 #-----------------------------------------------------------------------------------------
+#Now read in the root-mean-square error w.r.t. reanalysis
+fh = netcdf.Dataset(directory_CMIP6+'SALT_VVEL_RMS.nc', 'r')
+
+vel_RMS_all	    = fh.variables['VVEL_RMS'][:] 
+salt_RMS_all	= fh.variables['SALT_RMS'][:] 
+
+fh.close()
+
+#-----------------------------------------------------------------------------------------
+fh = netcdf.Dataset(directory_iHESP+'SALT_VVEL_RMS_RCP_HR.nc', 'r')
+
+vel_RMS_HR	= fh.variables['VVEL_RMS'][0] 
+salt_RMS_HR	= fh.variables['SALT_RMS'][0] 
+
+fh.close()
+
+#-----------------------------------------------------------------------------------------
+
+fh = netcdf.Dataset(directory_iHESP+'SALT_VVEL_RMS_RCP_LR.nc', 'r')
+
+vel_RMS_LR	= fh.variables['VVEL_RMS'][0] 
+salt_RMS_LR	= fh.variables['SALT_RMS'][0] 
+
+fh.close()
+
+#-----------------------------------------------------------------------------------------
 
 #Determine the CMIP6 model regression
 a, b	= np.polyfit(transport_salt_all[:, 0], AMOC_all[:, 0], 1)
@@ -565,5 +591,25 @@ ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', h
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
 ax.set_title('h) $F_{\mathrm{OV}}$ and NADW trends, 2000 - 2100')
 
+#-----------------------------------------------------------------------------------------
+ax2 	= fig.add_axes([0.53, 0.2, 0.44, 0.25])
+
+ax2.scatter(salt_RMS_all[models_1], vel_RMS_all[models_1], marker = 'D', color = 'k', s = 20, alpha = 0.5, zorder = 1)
+ax2.scatter(salt_RMS_all[models_2], vel_RMS_all[models_2], marker = 'o', color = 'k', s = 20, alpha = 0.5, zorder = 1)
+ax2.scatter(salt_RMS_all[models_3], vel_RMS_all[models_3], marker = 'x', color = 'k', s =20, alpha = 0.5, zorder = 1)
+ax2.set_xlim(-0.02, 0.6)
+ax2.set_ylim(-0.01, 0.15)
+ax2.set_xticks([0, 0.2, 0.4, 0.6])
+ax2.set_xlabel('Salinity RMS (g kg$^{-1}$)', fontsize = 7.5)
+ax2.set_ylabel('Velocity RMS (cm s$^{-1}$)', fontsize = 7.5)
+ax2.grid()
+
+ax2.scatter(np.mean(salt_RMS_all), np.mean(vel_RMS_all), s = 30, color = 'k', label = 'CMIP6 mean', zorder = 10)
+ax2.scatter(salt_RMS_HR, vel_RMS_HR, s = 30, color = 'r', label = 'HR-CESM', zorder = 10)
+ax2.scatter(salt_RMS_LR, vel_RMS_LR, s = 30, color = 'b', label = 'LR-CESM', zorder = 10)
+ax2.scatter(0, 0, s = 30, color = 'c', label = 'Reanalysis', zorder = 10)
+
+ax2.errorbar(np.mean(salt_RMS_all), np.mean(vel_RMS_all), xerr = np.std(salt_RMS_all), yerr = np.std(vel_RMS_all), color = 'k') 
+ax2.set_title('Salinity and meridional velocity RMS', fontsize = 10)
 
 show()
