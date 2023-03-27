@@ -59,7 +59,7 @@ graphs	      = graph_FOV + graph_FOV_ASW + graph_FOV_AIW + graph_FOV_NADW + grap
 legend_labels = [l.get_label() for l in graphs]
 ax.legend(graphs, legend_labels, loc=(0.8, 0.75), ncol=1, framealpha = 1.0, numpoints = 1)
 
-ax.set_title('f) $F_{\mathrm{OV}}$ at 34$^{\circ}$S, Stand-alone POP')
+ax.set_title('f) $F_{\mathrm{ovS}}$, Stand-alone POP')
 
 show()
 
