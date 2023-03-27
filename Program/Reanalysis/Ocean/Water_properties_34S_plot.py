@@ -232,7 +232,7 @@ if True:
 	AMOC	= np.mean(fh.variables['Transport'][:27])	#AMOC strength
 	fh.close()
 
-	ax.set_title('Reanalysis, $F_{\mathrm{OV}}$ = '+str(round(FOV, 2))+' Sv, AMOC = '+str(round(AMOC, 1))+' Sv')
+	ax.set_title('Reanalysis, $F_{\mathrm{ovS}}$ = '+str(round(FOV, 2))+' Sv, AMOC = '+str(round(AMOC, 1))+' Sv')
 
 	#-----------------------------------------------------------------------------------------
 	cNorm  		= colors.Normalize(vmin=34, vmax= 36) 		#Probablility
@@ -305,7 +305,6 @@ ax.set_title('a) Meridional velocity, Reanalysis (1994 - 2020)')
 
 fig, ax	= subplots()
 
-print(lon_AIW_1, lon_AIW_2)
 
 ax.fill_between([-60, 20], y1 = np.zeros(2) + depth[0], y2 = np.zeros(2) + 2*depth[-1], color = 'gray', alpha = 0.50)
 ax.plot([lon_AIW_1, lon_AIW_2], [depth_AIW, depth_AIW], linestyle = '--', linewidth = 2.0, color = 'k')

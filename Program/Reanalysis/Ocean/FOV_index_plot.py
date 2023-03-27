@@ -40,7 +40,7 @@ time, transport, FOV, FOV_ASW, FOV_AIW, FOV_NADW, FOV_ABW	= ReadinData(directory
 
 fig, ax	= subplots()
 
-graph_FOV	= plot(time, FOV, '-k', linewidth = 2.0, label = '$F_{\mathrm{OV}}$')
+graph_FOV	= plot(time, FOV, '-k', linewidth = 2.0, label = '$F_{\mathrm{ovS}}$')
 graph_FOV_ASW	= plot(time, FOV_ASW, '-r', linewidth = 2.0, label = 'ASW')
 graph_FOV_AIW	= plot(time, FOV_AIW, '-c', linewidth = 2.0, label = 'AIW')
 graph_FOV_NADW	= plot(time, FOV_NADW, '-b', linewidth = 2.0, label = 'NADW')
@@ -59,7 +59,7 @@ graphs	      = graph_FOV + graph_FOV_ASW + graph_FOV_AIW + graph_FOV_NADW + grap
 legend_labels = [l.get_label() for l in graphs]
 ax.legend(graphs, legend_labels, loc=(0.8, 0.75), ncol=1, framealpha = 1.0, numpoints = 1)
 
-ax.set_title('e) $F_{\mathrm{OV}}$ at 34$^{\circ}$S, Reanalysis')
+ax.set_title('e) $F_{\mathrm{ovS}}$, Reanalysis')
 
 show()
 
