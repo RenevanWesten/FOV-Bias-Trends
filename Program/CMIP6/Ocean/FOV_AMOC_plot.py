@@ -253,7 +253,7 @@ ax.errorbar(FOV_mean_rean, AMOC_mean_rean, xerr = np.std(FOV_rean), yerr = np.st
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('a) $F_{\mathrm{OV}}$ (34$^{\circ}$S) and AMOC strength (26$^{\circ}$N), 1994 - 2020')
+ax.set_title('a) $F_{\mathrm{ovS}}$ and AMOC strength (26$^{\circ}$N), 1994 - 2020')
 
 #-----------------------------------------------------------------------------------------
 
@@ -265,7 +265,7 @@ ax2.fill_between(time, y1 = np.percentile(transport_salt_all_time, 25, axis = 1)
 ax2.set_xlim(1994, 2100)
 ax2.set_ylim(-0.5, 0.5)
 ax2.grid()
-ax2.set_title('$F_{\mathrm{OV}}$ (Sv) in CMIP6', fontsize = 10)
+ax2.set_title('$F_{\mathrm{ovS}}$ (Sv) in CMIP6', fontsize = 10)
 
 #-----------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
@@ -306,7 +306,7 @@ ax.errorbar(FOV_mean_rean, FOV_ASW_mean_rean, xerr = np.std(FOV_rean), yerr = np
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('c) $F_{\mathrm{OV}}$ and ASW at 34$^{\circ}$S, 1994 - 2020')
+ax.set_title('c) $F_{\mathrm{ovS}}$ and ASW, 1994 - 2020')
 
 #-----------------------------------------------------------------------------------------
 
@@ -360,7 +360,7 @@ ax.errorbar(FOV_mean_rean, FOV_AIW_mean_rean, xerr = np.std(FOV_rean), yerr = np
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('e) $F_{\mathrm{OV}}$ and AIW at 34$^{\circ}$S, 1994 - 2020')
+ax.set_title('e) $F_{\mathrm{ovS}}$ and AIW, 1994 - 2020')
 
 #-----------------------------------------------------------------------------------------
 
@@ -413,7 +413,7 @@ ax.errorbar(FOV_mean_rean, FOV_NADW_mean_rean, xerr = np.std(FOV_rean), yerr = n
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('g) $F_{\mathrm{OV}}$ and NADW at 34$^{\circ}$S, 1994 - 2020')
+ax.set_title('g) $F_{\mathrm{ovS}}$ and NADW, 1994 - 2020')
 
 #-----------------------------------------------------------------------------------------
 
@@ -463,7 +463,7 @@ ax.errorbar(np.mean(transport_salt_all[:, 1]), np.mean(AMOC_all[:, 1]), xerr = n
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('b) $F_{\mathrm{OV}}$ and AMOC trends, 2000 - 2100')
+ax.set_title('b) $F_{\mathrm{ovS}}$ and AMOC trends, 2000 - 2100')
 
 #-----------------------------------------------------------------------------------------
 
@@ -513,7 +513,7 @@ ax.errorbar(np.mean(transport_salt_all[:, 1]), np.mean(transport_salt_ASW_all[:,
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('d) $F_{\mathrm{OV}}$ and ASW trends, 2000 - 2100')
+ax.set_title('d) $F_{\mathrm{ovS}}$ and ASW trends, 2000 - 2100')
 
 #-----------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
@@ -551,7 +551,7 @@ ax.errorbar(np.mean(transport_salt_all[:, 1]), np.mean(transport_salt_AIW_all[:,
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('f) $F_{\mathrm{OV}}$ and AIW trends, 2000 - 2100')
+ax.set_title('f) $F_{\mathrm{ovS}}$ and AIW trends, 2000 - 2100')
 
 #-----------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------
@@ -589,7 +589,7 @@ ax.errorbar(np.mean(transport_salt_all[:, 1]), np.mean(transport_salt_NADW_all[:
 ax.text(0.97, 0.95, '$R^2$ = '+str(round(r_2, 2)), verticalalignment='center', horizontalalignment='right', color = 'k', fontsize = 12, transform = ax.transAxes)
 
 ax.legend(loc='upper left', fancybox=True, shadow=False, scatterpoints=1, ncol = 1, framealpha = 1.0)
-ax.set_title('h) $F_{\mathrm{OV}}$ and NADW trends, 2000 - 2100')
+ax.set_title('h) $F_{\mathrm{ovS}}$ and NADW trends, 2000 - 2100')
 
 #-----------------------------------------------------------------------------------------
 ax2 	= fig.add_axes([0.53, 0.2, 0.44, 0.25])

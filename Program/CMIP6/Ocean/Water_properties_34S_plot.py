@@ -277,7 +277,7 @@ for model_i in range(len(models)):
 	AMOC	= np.mean(fh.variables['Transport'][:27])	#AMOC strength
 	fh.close()
 
-	ax.set_title(models[model_i]+', $F_{\mathrm{OV}}$ = '+str(round(FOV, 2))+' Sv, AMOC = '+str(round(AMOC, 1))+' Sv')
+	ax.set_title(models[model_i]+', $F_{\mathrm{ovS}}$ = '+str(round(FOV, 2))+' Sv, AMOC = '+str(round(AMOC, 1))+' Sv')
 
 	#-----------------------------------------------------------------------------------------
 	cNorm  		= colors.Normalize(vmin=34, vmax= 36) 		#Probablility
