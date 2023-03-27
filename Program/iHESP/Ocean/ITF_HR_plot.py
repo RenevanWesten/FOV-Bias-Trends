@@ -242,7 +242,7 @@ graphs	      = graph_control + graph_rcp
 legend_labels = [l.get_label() for l in graphs]
 ax.legend(graphs, legend_labels, loc='lower left', ncol=1, framealpha = 1.0, numpoints = 1)
 
-ax.set_title('a) $F_{\mathrm{OV}}$ (into the Indian Ocean) at 115$^{\circ}$E, HR-CESM')
+ax.set_title('a) $F_{\mathrm{ov}}$ (into the Indian Ocean) at 115$^{\circ}$E, HR-CESM')
 
 #-----------------------------------------------------------------------------------------
 

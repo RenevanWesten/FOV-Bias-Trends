@@ -246,7 +246,7 @@ ax.plot([1610, 1765], [-0.05, -0.15], ':k', linewidth = 0.5, zorder = 0)
 ax.plot([1600, 1635], [0.25, -0.051], ':k', linewidth = 0.5, zorder = 0)
 ax.plot([1600, 1635], [-0.05, -0.15], ':k', linewidth = 0.5, zorder = 0)
 
-ax.set_title('b) $F_{\mathrm{OV}}$ (into the Indian Ocean) at 115$^{\circ}$E, LR-CESM')
+ax.set_title('b) $F_{\mathrm{ov}}$ (into the Indian Ocean) at 115$^{\circ}$E, LR-CESM')
 
 #-----------------------------------------------------------------------------------------
 

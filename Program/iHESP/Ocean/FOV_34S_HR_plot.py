@@ -78,7 +78,7 @@ graphs	      = graph_control + graph_rcp
 legend_labels = [l.get_label() for l in graphs]
 ax.legend(graphs, legend_labels, loc='upper right', ncol=1, framealpha = 1.0, numpoints = 1)
 
-ax.set_title('a) $F_{\mathrm{OV}}$ at 34$^{\circ}$S, HR-CESM')
+ax.set_title('a) $F_{\mathrm{ovS}}$, HR-CESM')
 
 #-----------------------------------------------------------------------------------------
 

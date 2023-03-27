@@ -45,9 +45,9 @@ print('FOV Reanalysis (60N): ', np.mean(FOV_60N_rean))
 
 fig, ax	= subplots()
 
-graph_control_34S	= ax.plot(time_control, FOV_34S_control, '-k', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (34$^{\circ}$S)')
-graph_control_60N	= ax.plot(time_control, FOV_60N_control, '-b', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (60$^{\circ}$N)')
-graph_control_conver	= ax.plot(time_control, FOV_34S_control - FOV_60N_control, '-r', linewidth = 1.5, label = '$\sum$')
+graph_control_34S	= ax.plot(time_control, FOV_34S_control, '-k', linewidth = 1.5, label = '$F_{\mathrm{ovS}}$')
+graph_control_60N	= ax.plot(time_control, FOV_60N_control, '-b', linewidth = 1.5, label = '$F_{\mathrm{ovN}}$')
+graph_control_conver	= ax.plot(time_control, FOV_34S_control - FOV_60N_control, '-r', linewidth = 1.5, label = '$\Delta F_{\mathrm{ov}}$')
 
 ax.set_xlabel('Model year')
 ax.set_ylabel('Freshwater transport (Sv)')
@@ -69,13 +69,13 @@ ax.set_title('a) Freshwater convergence, HR-CESM, PI control')
 
 fig, ax	= subplots()
 
-graph_rcp_34S		= ax.plot(time_rcp, FOV_34S_rcp, '-k', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (34$^{\circ}$S)')
-graph_rcp_60N		= ax.plot(time_rcp, FOV_60N_rcp, '-b', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (60$^{\circ}$N)')
-graph_rcp_conver	= ax.plot(time_rcp, FOV_34S_rcp - FOV_60N_rcp, '-r', linewidth = 1.5, label = '$\sum$')
+graph_rcp_34S		= ax.plot(time_rcp, FOV_34S_rcp, '-k', linewidth = 1.5, label = '$F_{\mathrm{ovS}}$')
+graph_rcp_60N		= ax.plot(time_rcp, FOV_60N_rcp, '-b', linewidth = 1.5, label = '$F_{\mathrm{ovN}}$')
+graph_rcp_conver	= ax.plot(time_rcp, FOV_34S_rcp - FOV_60N_rcp, '-r', linewidth = 1.5, label = '$\Delta F_{\mathrm{ov}}$')
 
-graph_rean_34S		= ax.plot(time_rean, FOV_34S_rean, '-', color = 'gray', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (34$^{\circ}$S), Reanalysis')
-graph_rean_60N		= ax.plot(time_rean, FOV_60N_rean, '-', color = 'cyan', linewidth = 1.5, label = '$F_{\mathrm{OV}}$ (60$^{\circ}$N), Reanalysis')
-graph_rean_conver	= ax.plot(time_rean, FOV_34S_rean - FOV_60N_rean, '-', color = 'firebrick', linewidth = 1.5, label = '$\sum$, Reanalysis')
+graph_rean_34S		= ax.plot(time_rean, FOV_34S_rean, '-', color = 'gray', linewidth = 1.5, label = '$F_{\mathrm{ovS}}$, Reanalysis')
+graph_rean_60N		= ax.plot(time_rean, FOV_60N_rean, '-', color = 'cyan', linewidth = 1.5, label = '$F_{\mathrm{ovN}}$, Reanalysis')
+graph_rean_conver	= ax.plot(time_rean, FOV_34S_rean - FOV_60N_rean, '-', color = 'firebrick', linewidth = 1.5, label = '$\Delta F_{\mathrm{ov}}$, Reanalysis')
 
 ax.set_xlabel('Model year')
 ax.set_ylabel('Freshwater transport (Sv)')
