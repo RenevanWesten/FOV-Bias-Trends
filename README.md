@@ -1,6 +1,6 @@
 # FOV-Bias-Trends
 
-Persistent Climate Model Biases lead to an Underestimation of Atlantic Ocean Tipping, submitted to PNAS (28 March 2023)
+Persistent Climate Model Biases lead to an Underestimation of Atlantic Ocean Tipping, submitted to PNAS Nexus (1 May 2023)
 
 René M. van Westen and Henk A. Dijkstra
 
