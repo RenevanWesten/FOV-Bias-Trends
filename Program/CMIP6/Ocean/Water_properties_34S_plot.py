@@ -2,15 +2,16 @@
 
 from pylab import *
 import numpy
-import datetime
 import time
 import glob, os
 import math
 import netCDF4 as netcdf
 import matplotlib.colors as colors
+import matplotlib.tri as tri
 
 #Making pathway to folder with all data
-directory	= '../../../Data/CMIP6/Ocean/'
+directory	    = '../../../Data/CMIP6/Ocean/'
+directory_rean  = '../../../Data/Reanalysis/'
 
 def ReadinData(filename, lat_index, depth_min_index, depth_max_index):
 	#The CESM grid is structured as
@@ -37,13 +38,123 @@ def ReadinData(filename, lat_index, depth_min_index, depth_max_index):
 	fh.close()
     
 	return lon_u, lat_u, lon_t, lat_t, depth, layer, grid_x_u, grid_x_t, v_vel, salt
-			
+
+def ReadinDataReanalysis(filename, lat_index, depth_min_index, depth_max_index, section_name):
+
+	fh = netcdf.Dataset(filename, 'r')
+
+	#First get the u-grid
+	lon 		= fh.variables['longitude'][:]						                    #Longitude
+	lat 		= fh.variables['latitude'][lat_index]					                #Latitude 
+	depth   	= fh.variables['depth'][depth_min_index:depth_max_index] 		        #Depth (m)
+	v_vel 		= fh.variables['vo'][:, depth_min_index:depth_max_index, lat_index] 	#Meridional velocity (m/s)
+	salt		= fh.variables['so'][:, depth_min_index:depth_max_index, lat_index] 	#Salinity (g / kg)
+	v_vel_mask 	= fh.variables['vo'][0, depth_min_index:depth_max_index, lat_index] 	#Meridional velocity (m/s)
+
+	fh.close()
+
+	fh		= netcdf.Dataset(directory_rean+'Data/Grid/Grid_'+section_name+'.nc', 'r')
+
+	layer		= fh.variables['layer'][depth_min_index:depth_max_index, lat_index] 	#Layer thickness (m)
+	grid_x		= fh.variables['DX'][lat_index] 					#Zonal grid cell length (m)
+
+	fh.close()
+
+	#Convert to yearly averaged data
+	month_days	= np.asarray([31., 28., 31., 30., 31., 30., 31., 31., 30., 31., 30., 31.])
+	month_days	= month_days / np.sum(month_days)
+
+	#Fill the array's with the same dimensions
+	month_days_all	= ma.masked_all((len(month_days), len(depth), len(lon)))
+
+	for month_i in range(len(month_days)):
+		month_days_all[month_i]		= month_days[month_i]
+
+	#Determine the time mean over the months of choice
+	v_vel	= np.sum(v_vel * month_days_all, axis = 0)
+	v_vel	= ma.masked_array(v_vel, mask = v_vel_mask.mask)
+	salt	= np.sum(salt * month_days_all, axis = 0)
+	salt	= ma.masked_array(salt, mask = v_vel_mask.mask)
+
+	return lon, lat, depth, layer, grid_x, v_vel, salt
+
+
 #-----------------------------------------------------------------------------------------
 #--------------------------------MAIN SCRIPT STARTS HERE----------------------------------
 #-----------------------------------------------------------------------------------------
 
 depth_min 	= 0
 depth_max	= 6000
+
+#-----------------------------------------------------------------------------------------
+#Read in the salinity field for the Reanalysis product first
+
+files	= glob.glob(directory_rean+'Data/FOV_section_34S/Reanalysis_data_year_*.nc')
+files.sort()
+
+#-----------------------------------------------------------------------------------------
+
+#Get all the relevant indices to determine the mass transport
+fh = netcdf.Dataset(files[0], 'r')
+
+lat 		= fh.variables['latitude'][:]	#Latitude  
+depth   	= fh.variables['depth'][:]	#Depth (m)
+	
+fh.close()
+
+#Get the dimensions of depth and latitude
+depth_min_index 	= (fabs(depth_min - depth)).argmin()
+depth_max_index 	= (fabs(depth_max - depth)).argmin() + 1
+lat_index		    = (fabs(-34 - lat)).argmin()
+
+#-----------------------------------------------------------------------------------------
+#Determine the section length per depth layer
+lon, lat, depth, layer_field, grid_x, v_vel, salt = ReadinDataReanalysis(files[0], lat_index, depth_min_index, depth_max_index, 'FOV_section_34S')
+
+#Define empty array's
+salt_all		= ma.masked_all((len(files), len(depth), len(lon)))
+
+for file_i in range(len(files)):
+    #Now determine for each month
+    print(file_i)
+    
+    #Save the renalysis data
+    lon, lat, depth, layer_field, grid_x, v_vel, salt = ReadinDataReanalysis(files[file_i], lat_index, depth_min_index, depth_max_index, 'FOV_section_34S')
+    salt_all[file_i]    = salt
+
+#Take the time mean
+salt_rean   = np.mean(salt_all, axis = 0)
+#-----------------------------------------------------------------------------------------
+
+for depth_i in range(len(depth)):
+    #Fill the boundaries for the interpolation, otherwise it interpolates wrongly near the boundaries
+
+    if np.all(salt_rean[depth_i].mask):
+        #No masked elements, skip
+        continue
+
+    #Fill all the western part with the boundary value
+    salt_west			            = np.where(salt_rean[depth_i].mask == False)[0][0]
+    salt_rean[depth_i, :salt_west]	= salt_rean[depth_i, salt_west]
+
+    #Fill all the eastern part with the boundary value
+    salt_east			            = len(lon) - np.where(salt_rean[depth_i][::-1].mask == False)[0][0]
+    salt_rean[depth_i, salt_east:]	= salt_rean[depth_i, salt_east-1]
+
+#Make 1D for interpolation
+lon, depth	= np.meshgrid(lon, depth)
+lon			= lon.ravel()
+depth		= depth.ravel()
+salt_rean	= salt_rean.ravel()
+
+#Remove all the masked elements
+lon			= lon[salt_rean.mask == False]
+depth		= depth[salt_rean.mask == False]
+salt_rean	= salt_rean[salt_rean.mask == False]
+
+#Triangulate the grid of the CESM
+triang 		= tri.Triangulation(lon, depth)
+salt_rean	= tri.LinearTriInterpolator(triang, salt_rean)
 
 #-----------------------------------------------------------------------------------------
 
@@ -224,10 +335,18 @@ for model_i in range(len(models)):
 	lon_NADW_1, lon_NADW_2	= lon[lon_NADW_index[0]], lon[lon_NADW_index[-1]]
 	lon_AABW_1, lon_AABW_2	= lon[lon_AABW_index[0]], lon[lon_AABW_index[-1]]
 
-	#-----------------------------------------------------------------------------------------
+	#----------------------------------------------------------------------------------------
 
-	depth_crop			= 1000
-	factor_depth_crop		= 4
+	#Interpolate onto the CMIP6 grid for each of the models
+	x, y 		    = np.meshgrid(lon, depth)
+	salt_rean_CMIP6	= salt_rean(x, y)
+	salt_rean_CMIP6	= ma.masked_array(salt_rean_CMIP6, mask = salt_all.mask)
+	salt_anom	    = salt_all - salt_rean_CMIP6
+  
+	#-----------------------------------------------------------------------------------------
+    
+	depth_crop			        = 1000
+	factor_depth_crop		    = 4
 	depth[depth > depth_crop] 	= ((depth[depth > depth_crop] - depth_crop) / factor_depth_crop) + depth_crop
 
 	if depth_AAIW > depth_crop:
@@ -285,7 +404,7 @@ for model_i in range(len(models)):
 	color_fresh 	= scalarMap.to_rgba(34.5)
 	color_salt 	= scalarMap.to_rgba(35.5)
 
-	ax2 = fig.add_axes([0.125, 0.11, 0.05, 0.768])
+	ax2 = fig.add_axes([0.125, 0.11, 0.06, 0.768])
 
 	ax2.plot(vel_salt_all, depth, '-k', linewidth = 2.0)
 	ax2.set_xlim(-0.1, 0.1)
@@ -302,5 +421,40 @@ for model_i in range(len(models)):
 		
 	ax2.set_xticklabels([])
 	ax2.set_yticklabels([])
+    
+	#-----------------------------------------------------------------------------------------
+    #-----------------------------------------------------------------------------------------
+    #-----------------------------------------------------------------------------------------
+    #Salinity anomaly plot
+	fig, ax	= subplots()
+
+
+	ax.fill_between([-60, 20], y1 = np.zeros(2) + depth[0], y2 = np.zeros(2) + 2*depth[-1], color = 'gray', alpha = 0.50)
+	ax.plot([lon_AAIW_1, lon_AAIW_2], [depth_AAIW, depth_AAIW], linestyle = '--', linewidth = 2.0, color = 'k')
+	ax.plot([lon_NADW_1, lon_NADW_2], [depth_NADW, depth_NADW], linestyle = '--', linewidth = 2.0, color = 'k')
+	ax.plot([lon_AABW_1, lon_AABW_2], [depth_AABW, depth_AABW], linestyle = '--', linewidth = 2.0, color = 'k')
+
+	CS	= contourf(lon, depth, salt_anom, levels = np.arange(-1, 1.01, 0.1), extend = 'both', cmap = 'PuOr_r')
+	cbar	= colorbar(CS, ticks = np.arange(-1, 1.01, 0.5))
+	cbar.set_label('Salinity difference (g kg$^{-1}$)')
+
+	ax.set_xlim(-60, 20)
+	ax.set_ylim(((5500 - depth_crop) / factor_depth_crop) + depth_crop, 0)
+	ax.set_ylabel('Depth (m)')	
+
+	ax.set_xticks(np.arange(-60, 21, 10))
+	ax.set_xticklabels(['60$^{\circ}$W', '50$^{\circ}$W', '40$^{\circ}$W', '30$^{\circ}$W', '20$^{\circ}$W', '10$^{\circ}$W','0$^{\circ}$', '10$^{\circ}$E', '20$^{\circ}$E'])
+
+	labels =  ax.get_yticks()
+	for label_i in range(len(labels)):
+		if labels[label_i] > depth_crop:
+			#Rescale the xlabels
+			labels[label_i]	= ((labels[label_i] - depth_crop) * factor_depth_crop) + depth_crop
+
+	labels	= labels.astype(int)
+	ax.set_yticklabels(labels)
+
+	ax.set_title(models[model_i]+', $F_{\mathrm{ovS}}$ = '+str(round(FOV, 2))+' Sv, AMOC = '+str(round(AMOC, 1))+' Sv')
 
 	show()
+
