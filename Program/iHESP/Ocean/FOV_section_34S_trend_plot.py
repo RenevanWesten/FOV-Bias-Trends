@@ -300,7 +300,7 @@ color_north 	= scalarMap.to_rgba(0.5)
 
 print(vel_mer_trend)
 
-ax2 = fig.add_axes([0.125, 0.11, 0.05, 0.768])
+ax2 = fig.add_axes([0.125, 0.11, 0.06, 0.768])
 
 ax2.plot(vel_mer_trend, depth, '-k', linewidth = 2.0)
 ax2.set_xlim(-0.2, 0.2)
