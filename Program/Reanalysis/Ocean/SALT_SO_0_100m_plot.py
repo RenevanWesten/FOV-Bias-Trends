@@ -2,7 +2,6 @@
 
 from pylab import *
 import numpy
-import datetime
 import time
 import glob, os
 import math
@@ -64,7 +63,7 @@ for file_i in range(len(files)):
 salt_all	= np.mean(salt_all, axis = 0)
 #-----------------------------------------------------------------------------------------
 
-fig, ax = plt.subplots(subplot_kw={'projection': ccrs.PlateCarree()})
+fig, ax = plt.subplots(subplot_kw={'projection': ccrs.PlateCarree()}, figsize = (6.8, 4.8))
 
 CS      = ax.contourf(lon, lat, salt_all, levels = np.arange(33, 37.1, 0.1), extend = 'both', cmap = 'BrBG_r', transform=ccrs.PlateCarree())
 
