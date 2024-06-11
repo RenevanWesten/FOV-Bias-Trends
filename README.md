@@ -1,6 +1,6 @@
 # FOV-Bias-Trends
 
-Persistent Climate Model Biases in the Atlantic Ocean's Freshwater Transport, Ocean Science Discussions (November 2023)
+Persistent Climate Model Biases in the Atlantic Ocean's Freshwater Transport, Ocean Science (https://os.copernicus.org/articles/20/549/2024/, April 2024)
 
 René M. van Westen and Henk A. Dijkstra
 
